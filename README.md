@@ -105,33 +105,41 @@ curl -s http://localhost:8080 | head
 ![1](https://github.com/Foxbeerxxx/application_k8s/blob/main/img/img1.png)
 
 
-
-4. `Заполните здесь этапы выполнения, если требуется ....`
-5. `Заполните здесь этапы выполнения, если требуется ....`
-6. 
-
-```
-Поле для вставки кода...
-....
-....
-....
-....
-```
-
-`При необходимости прикрепитe сюда скриншоты
-![1](https://github.com/Foxbeerxxx/application_k8s/blob/main/img/img1.png)`
-
-
 ---
 
 ### Задание 2
 
-`Приведите ответ в свободной форме........`
+1. `Подготовка сертификата и можно из файлов сгенерировать манифест`
+```
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+  -keyout tls.key -out tls.crt -subj "/CN=myapp.example.com"
 
-1. `Заполните здесь этапы выполнения, если требуется ....`
-2. `Заполните здесь этапы выполнения, если требуется ....`
-3. `Заполните здесь этапы выполнения, если требуется ....`
-4. `Заполните здесь этапы выполнения, если требуется ....`
+# Сгенерировать манифест секрета из файлов
+kubectl create secret tls tls-secret \
+  --cert=tls.crt --key=tls.key \
+  --dry-run=client -o yaml > secret-tls.yaml
+
+```
+![3](https://github.com/Foxbeerxxx/application_k8s/blob/main/img/img3.png)
+
+2. `Применение манифестов`
+
+```
+kubectl apply -f secret-tls.yaml
+kubectl apply -f ingress-tls.yaml
+kubectl get ingress web-app-ing
+```
+![4](https://github.com/Foxbeerxxx/application_k8s/blob/main/img/img4.png)
+
+
+3. `Добавляю в хост 127.0.0.1 myapp.example.com`
+4. `Проверяю`
+```
+kubectl get ingress web-app-ing
+curl -kI https://myapp.example.com/
+```
+![5](https://github.com/Foxbeerxxx/application_k8s/blob/main/img/img5.png)
+
 5. `Заполните здесь этапы выполнения, если требуется ....`
 6. 
 
